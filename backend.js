@@ -108,11 +108,20 @@ function findUserById(id) {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(201).end();
+    // res.status(201).end();
+    // use the http response to attach JSON object
+    res.status(201).send(userToAdd);
 });
 
 function addUser(user){
+    user['id'] = uniqueID();
     users['users_list'].push(user);
+}
+
+function uniqueID(){
+    // Math.floor rounds down, Date.now() returns # of ms since jan 1, 1970 (contributes to uniqueness)
+    // multiply by math.random to ensure unique incase multiple inputs at same ms
+    return Math.floor(Math.random() * Date.now());
 }
 
 // delete user from list
