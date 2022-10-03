@@ -7,23 +7,34 @@ function MyApp() {
     const [characters, setCharacters] = useState([]);
   
 function removeOneCharacter (index) {
+    var rid = '';
     const updated = characters.filter((character, i) => {
+        if (i === index)
+            rid = character['id'];
         return i !== index
-      });
-      setCharacters(updated);
+    });
+    // console.log(updated);
+    // setCharacters(updated);
+    deleteCharacterbyID(rid).then( result => {
+        // if (result && result.status === 204)
+        if (result.status === 204)
+            console.log(updated);
+            setCharacters(updated);
+        });
+        // console.log(characters);
     }
 
-// async function deleteCharacterAx(person){
-//     try {
-//        deleteId = person['id'];
-//        const response = await axios.delete('http://localhost:5001/users', {id = deleteId});
-//        return response;
-//     }
-//     catch (error) {
-//        console.log(error);
-//        return false;
-//     }
-// } 
+async function deleteCharacterbyID(id){
+    try {
+       let str = 'http://localhost:5001/users/' + String(id);
+       const response = await axios.delete(str);
+       return response;
+    }
+    catch (error) {
+       console.log(error);
+       return false;
+    }
+}
 
 function updateList(person) { 
     makePostCall(person).then( result => {
