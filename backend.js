@@ -88,6 +88,7 @@ const findUserByNameandJob = (name, job) => {
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findUserById(id);
+    // console.log(result);
     if (result === undefined || result.length == 0)
         res.status(404).send('Resource not found.');
     else {
@@ -97,8 +98,8 @@ app.get('/users/:id', (req, res) => {
 });
 
 function findUserById(id) {
-    return users['users_list'].find( (user) => user['id'] === id); // or line below
-    //return users['users_list'].filter( (user) => user['id'] === id);
+    // return users['users_list'].find( (user) => user['id'] === id); // or line below
+    return users['users_list'].filter( (user) => user['id'] === id);
 }
 
 // add user to list
@@ -121,7 +122,8 @@ function addUser(user){
 function uniqueID(){
     // Math.floor rounds down, Date.now() returns # of ms since jan 1, 1970 (contributes to uniqueness)
     // multiply by math.random to ensure unique incase multiple inputs at same ms
-    return Math.floor(Math.random() * Date.now());
+    let id = Math.floor(Date.now());
+    return String(id);
 }
 
 // delete user from list
@@ -130,17 +132,22 @@ function uniqueID(){
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
+    // const name = req.params['name'];
+    let found = findUserById(id);
+    // console.log(found);
     let result = deleteUserById(id);
-    if (result === undefined || result.length == 0)
+    if (found === undefined || found.length == 0)
         res.status(404).send('Resource not found.');
     else {
-        result = {users_list: result};
-        res.send(result);
+        // result = {users_list: result};
+        users['users_list'] = result;
+        res.status(204).send(result);
+        // res.send(result);
     }
 });
 
 function deleteUserById(id){
     // use filter function
-    users['users_list'] = users['users_list'].filter( (user) => user['id'] !== id);
+    // users['users_list'] = users['users_list'].filter( (user) => user['id'] !== id);
+    return users['users_list'].filter( (user) => user['id'] !== id);
 }
-
